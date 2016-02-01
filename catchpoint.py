@@ -65,7 +65,12 @@ class Catchpoint(object):
         self._debug("URL: " + r.url)
         data = r.json()
 
-        self._token = data['access_token']
+        try:
+            self._token = data['access_token']
+        except KeyError:
+            err = data.get('Message', '(unknown error)')
+            raise CatchpointError('No access_token received.  '
+                                  'Error: {}'.format(err))
         self._debug("TOKEN: " + self._token)
         self._auth = True
 
